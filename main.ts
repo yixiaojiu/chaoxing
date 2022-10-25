@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { chromium } from 'playwright'
-import { login, sleep } from './src'
+import chalk from 'chalk'
+import { getCourseList, login, sleep, waitHomePage } from './src'
 
 mian()
 
@@ -18,10 +19,9 @@ async function mian() {
   const page = await context.newPage()
 
   if (isExisted) {
-    await page.goto('https://i.chaoxing.com/')
-    // await page.waitForSelector('#mainphoto', {
-    //   timeout: 60000,
-    // })
+    await page.goto('http://i.mooc.chaoxing.com/')
+    await waitHomePage(page)
+    console.log(chalk.cyan('进入首页成功'))
   }
   else {
     await login(page)
@@ -32,11 +32,6 @@ async function mian() {
 
   await sleep(1234)
 
-  await sleep(5000)
-  await page.screenshot({
-    path: './shoot.png',
-  })
-  console.log('截图完成')
-
+  const courseList = await getCourseList(page)
   // await browser.close()
 }
