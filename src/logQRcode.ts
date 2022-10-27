@@ -2,9 +2,10 @@ import jsQR from 'jsqr'
 import Jimp from 'jimp'
 import qrcode from 'qrcode-terminal'
 import axios from 'axios'
+import chalk from 'chalk'
 
 export const logQRcode = async (qrcodeUrl: string) => {
-  console.log('开始获取登录二维码')
+  console.log(chalk.green('开始获取二维码'))
   const { data } = await axios.get(qrcodeUrl, {
     responseType: 'arraybuffer',
   })

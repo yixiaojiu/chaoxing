@@ -1,13 +1,22 @@
 import { existsSync } from 'node:fs'
 import { chromium } from 'playwright'
 import chalk from 'chalk'
-import { getCourseList, login, sleep, waitHomePage } from './src'
+import {
+  delay,
+  faceVerification,
+  getCourseList,
+  getSelectCourse,
+  login,
+  waitPage,
+  watchCourseTask,
+} from './src'
+import { config } from './config'
 
 mian()
 
 async function mian() {
   const browser = await chromium.launch({
-    headless: false,
+    headless: config.headless,
     channel: 'chrome',
   })
 
@@ -20,8 +29,8 @@ async function mian() {
 
   if (isExisted) {
     await page.goto('http://i.mooc.chaoxing.com/')
-    await waitHomePage(page)
-    console.log(chalk.cyan('进入首页成功'))
+    await waitPage(page, /chaoxing/g)
+    console.log(chalk.green('进入首页成功'))
   }
   else {
     await login(page)
@@ -30,8 +39,20 @@ async function mian() {
     })
   }
 
-  await sleep(1234)
+  await delay(1234)
 
   const courseList = await getCourseList(page)
+  const selectedCourse = await getSelectCourse(courseList)
+  const courseUrl = await selectedCourse.getAttribute('href')
+  page.goto(courseUrl!)
+
+  await faceVerification(page)
+  await waitPage(page, (url) => {
+    return url.pathname === '/mycourse/stu'
+  })
+  console.log(chalk.green('进入课程页面成功'))
+
+  await watchCourseTask(page)
+
   // await browser.close()
 }
