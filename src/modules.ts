@@ -29,22 +29,29 @@ export async function getChapterUnit(page: Page) {
   return await frame!.$$('.chapter_unit')
 }
 
+let courseUnitPageUrl = ''
 export async function watchCourseTask(page: Page) {
   while (true) {
-    const chapterList = await getChapterUnit(page)
-    if (config.midnightPause) {
-      const hour = new Date().getHours()
-      if (hour < 7) {
-        console.log(chalk.green('当前深夜，退出程序'))
-        process.exit(0)
+    try {
+      const chapterList = await getChapterUnit(page)
+      if (config.midnightPause) {
+        const hour = new Date().getHours()
+        if (hour < 7) {
+          console.log(chalk.green('当前深夜，退出程序'))
+          process.exit(0)
+        }
       }
+      await delay(1011)
+      courseUnitPageUrl = page.url()
+      await watchOneClass(chapterList, page)
+      await waitPage(page, (url) => {
+        return url.pathname === '/mycourse/stu'
+      })
+      await delay(1212)
     }
-    await delay(1011)
-    await watchOneClass(chapterList, page)
-    await waitPage(page, (url) => {
-      return url.pathname === '/mycourse/stu'
-    })
-    await delay(1212)
+    catch (err) {
+      await page.goto(courseUnitPageUrl)
+    }
   }
 }
 
@@ -83,8 +90,7 @@ async function watchOneClass(chapterList: ElementHandle<SVGElement | HTMLElement
   await delay(secends * 1000)
   await delay(5123)
   console.log(chalk.yellow(`${getTime()} 视频播放完成`))
-  await page.goBack()
-  await page.goBack()
+  await page.goto(courseUnitPageUrl)
 }
 
 let chapteCache = 0

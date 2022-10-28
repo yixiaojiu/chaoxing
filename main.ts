@@ -54,5 +54,5 @@ async function mian() {
 
   await watchCourseTask(page)
 
-  // await browser.close()
+  await browser.close()
 }
