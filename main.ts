@@ -29,7 +29,7 @@ async function mian() {
 
   if (isExisted) {
     await page.goto('http://i.mooc.chaoxing.com/')
-    await waitPage(page, /chaoxing/g)
+    await waitPage(page, url => url.pathname === '/space/index')
     console.log(chalk.green('进入首页成功'))
   }
   else {

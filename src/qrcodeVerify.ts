@@ -12,7 +12,7 @@ export const login = async (page: Page) => {
   const qrcodeUrl = await qrImage?.getAttribute('src')
   await logQRcode(loginUrl + qrcodeUrl)
 
-  await waitPage(page, /chaoxing/g)
+  await waitPage(page, url => url.pathname === '/space/index')
   console.log(chalk.green('登录成功'))
 }
 
