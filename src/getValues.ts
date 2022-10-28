@@ -2,11 +2,11 @@ import type { ElementHandle, Page } from 'playwright'
 import chalk from 'chalk'
 
 export async function getCourseList(page: Page) {
-  const iframe = await page.$('#frame_content')!
-  const courseSrc = await iframe!.getAttribute('src')
-  await page.goto(courseSrc!)
+  const iframe = await page.frame({
+    url: url => url.pathname === '/visit/interaction',
+  })
 
-  const courseListULElement = await page.waitForSelector('#courseList')
+  const courseListULElement = await iframe!.$('#courseList')
   const courseList = await courseListULElement!.$$('h3 > a')
 
   if (!courseList.length) {
