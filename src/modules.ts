@@ -20,7 +20,7 @@ export async function getSelectCourse(courseList: ElementHandle<SVGElement | HTM
 }
 
 export async function getChapterUnit(page: Page) {
-  await delay(1022)
+  await delay(2022)
   const frame = await page.frame({
     url: (url) => {
       return url.pathname === '/mooc2-ans/mycourse/studentcourse'
@@ -78,7 +78,7 @@ async function watchOneClass(chapterList: ElementHandle<SVGElement | HTMLElement
   const span = await frame!.$('.vjs-duration-display')
   let durationText = '0:00'
   while (true) {
-    await delay(512)
+    await delay(1512)
     durationText = await span!.innerText()
     if (durationText !== '0:00') {
       break

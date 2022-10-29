@@ -39,7 +39,7 @@ async function mian() {
     })
   }
 
-  await delay(1234)
+  await delay(2234)
 
   const courseList = await getCourseList(page)
   const selectedCourse = await getSelectCourse(courseList)

@@ -16,7 +16,7 @@ export function prompt() {
 
 export const delay = (second: number) => {
   return new Promise((resolve: any) => {
-    setTimeout(() => resolve(), second)
+    setTimeout(() => resolve(), second + getRandomInt(-1000, 1000))
   })
 }
 
@@ -31,4 +31,8 @@ export function getTime() {
 export function calcSecond(time: string) {
   const times = time.split(':')
   return parseInt(times[0]) * 60 + parseInt(times[1])
+}
+
+export function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
