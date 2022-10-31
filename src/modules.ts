@@ -30,9 +30,15 @@ export async function getChapterUnit(page: Page) {
 }
 
 let courseUnitPageUrl = ''
+let errorTime = 0
+let errorMsg = ''
 export async function watchCourseTask(page: Page) {
   while (true) {
     try {
+      courseUnitPageUrl = page.url()
+      if (config.isNeedCourseClick) {
+        await clickChapter(page)
+      }
       const chapterList = await getChapterUnit(page)
       if (config.midnightPause) {
         const hour = new Date().getHours()
@@ -42,7 +48,6 @@ export async function watchCourseTask(page: Page) {
         }
       }
       await delay(1011)
-      courseUnitPageUrl = page.url()
       await watchOneClass(chapterList, page)
       await waitPage(page, (url) => {
         return url.pathname === '/mycourse/stu'
@@ -50,6 +55,19 @@ export async function watchCourseTask(page: Page) {
       await delay(1212)
     }
     catch (err) {
+      const msg = (err as Error).message
+      console.log(chalk.red(msg))
+      if (errorTime > config.maxErrorTime) {
+        console.log(chalk.red('已经超出最大重试次数'))
+        return
+      }
+      if (msg === errorMsg) {
+        errorTime++
+      }
+      else {
+        errorMsg = msg
+        errorTime = 0
+      }
       await page.goto(courseUnitPageUrl)
     }
   }
@@ -88,7 +106,7 @@ async function watchOneClass(chapterList: ElementHandle<SVGElement | HTMLElement
   const currentText = await currentSpan?.innerText()
   const secends = calcSecond(durationText) - calcSecond(currentText!)
   await delay(secends * 1000)
-  await delay(5123)
+  await delay(3123)
   console.log(chalk.yellow(`${getTime()} 视频播放完成`))
   await page.goto(courseUnitPageUrl)
 }
@@ -101,9 +119,9 @@ async function getWatchCourse(chapterList: ElementHandle<SVGElement | HTMLElemen
     const LiElements = await chapterElement.$$('li')
     for (let LiIndex = chapterIndex === chapteCache ? LiCache : 0; LiIndex < LiElements.length; LiIndex++) {
       const LiElement = LiElements[LiIndex]
-      const inputElement = await LiElement.$('.catalog_task input')
-      const inputValue = await inputElement!.getAttribute('value')
-      if (inputValue === '2') {
+      const span = await LiElement.$('.bntHoverTips')
+      const innerText = await span!.innerHTML()
+      if (innerText[0] === config.matchValue) {
         chapteCache = chapterIndex
         LiCache = LiIndex
         return LiElement
@@ -113,3 +131,7 @@ async function getWatchCourse(chapterList: ElementHandle<SVGElement | HTMLElemen
   return null
 }
 
+async function clickChapter(page: Page) {
+  const AnchorElement = await page.$('.sideCon ul li a[title="章节"]')
+  AnchorElement?.click()
+}

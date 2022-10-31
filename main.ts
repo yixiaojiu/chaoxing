@@ -46,7 +46,9 @@ async function mian() {
   const courseUrl = await selectedCourse.getAttribute('href')
   page.goto(courseUrl!)
 
-  await faceVerification(page)
+  if (config.isNeedFace) {
+    await faceVerification(page)
+  }
   await waitPage(page, (url) => {
     return url.pathname === '/mycourse/stu'
   })
