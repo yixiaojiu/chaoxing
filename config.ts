@@ -11,7 +11,7 @@ export const config: Option = {
   // 是否在0~6点停止脚本，默认开启
   midnightPause: true,
   // 是否开启无头模式, 默认未无头模式
-  headless: false,
+  headless: true,
   // 为完成任务的判断条件，
   matchValue: '1',
   // 最大报错次数
