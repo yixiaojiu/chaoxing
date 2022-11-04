@@ -13,11 +13,11 @@ export const config: Option = {
   // 是否开启无头模式, 默认未无头模式
   headless: true,
   // 为完成任务的判断条件，
-  matchValue: '1',
+  matchValue: '2',
   // 最大报错次数
   maxErrorTime: 5,
   // 是否需要人脸识别
-  isNeedFace: false,
+  isNeedFace: true,
   // 是否在进入课程页需要点击
-  isNeedCourseClick: true,
+  isNeedCourseClick: false,
 }
