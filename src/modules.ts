@@ -43,8 +43,8 @@ export async function watchCourseTask(page: Page) {
       if (config.midnightPause) {
         const hour = new Date().getHours()
         if (hour < 7) {
-          console.log(chalk.green('当前深夜，退出程序'))
-          process.exit(0)
+          console.log(chalk.green('当前深夜，暂停程序'))
+          await delay(7 * 60 * 1000)
         }
       }
       await delay(1011)
